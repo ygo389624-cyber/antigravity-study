@@ -1,0 +1,3432 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitSync AI - 스마트 워치 연동 다이어트 기록</title>
+  
+  <!-- Modern Outfit Typography from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Custom Core Design System -->
+  <style>
+/* Modern, Premium Dark Mode and Glassmorphic CSS Styling for Diet Tracker */
+
+:root {
+  /* HSL Color Tokens */
+  --bg-color: hsl(222, 47%, 6%);
+  --surface-color: hsla(223, 47%, 11%, 0.6);
+  --surface-border: hsla(223, 47%, 20%, 0.4);
+  --text-primary: hsl(210, 40%, 98%);
+  --text-secondary: hsl(215, 20%, 65%);
+  --text-muted: hsl(215, 12%, 40%);
+  
+  --accent-cyan: hsl(180, 100%, 50%);
+  --accent-cyan-glow: hsla(180, 100%, 50%, 0.35);
+  
+  /* Feature Accent Colors */
+  --color-intake: hsl(24, 100%, 60%);        /* Neon Orange */
+  --color-intake-glow: hsla(24, 100%, 60%, 0.25);
+  
+  --color-burn: hsl(330, 100%, 65%);         /* Neon Pink */
+  --color-burn-glow: hsla(330, 100%, 65%, 0.25);
+  
+  --color-deficit: hsl(195, 100%, 50%);      /* Neon Blue */
+  --color-deficit-glow: hsla(195, 100%, 50%, 0.25);
+  
+  --color-cumulative: hsl(270, 100%, 65%);   /* Neon Purple */
+  --color-cumulative-glow: hsla(270, 100%, 65%, 0.25);
+  
+  --color-weight: hsl(145, 80%, 50%);        /* Neon Green */
+  --color-weight-glow: hsla(145, 80%, 50%, 0.25);
+  
+  /* Fonts */
+  --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  
+  /* Dimensions */
+  --phone-width: 100%;
+  --phone-height: 100vh;
+  --border-radius-lg: 24px;
+  --border-radius-md: 16px;
+  --border-radius-sm: 8px;
+  --transition-speed: 0.3s;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #0b0f19;
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(225,39%,10%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(339,49%,9%,1) 0, transparent 50%),
+    radial-gradient(at 100% 100%, hsla(218,39%,11%,1) 0, transparent 50%),
+    radial-gradient(at 0% 100%, hsla(263,30%,12%,1) 0, transparent 50%);
+  background-attachment: fixed;
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Phone Container Frame for Desktop View */
+.phone-wrapper {
+  position: relative;
+  width: var(--phone-width);
+  height: var(--phone-height);
+  background: hsl(222, 47%, 4%);
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* Dynamic Notch / Island */
+.phone-notch {
+  display: none;
+}
+
+/* Status Bar */
+.phone-status-bar {
+  display: none;
+}
+
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-icon {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+/* App Main Body */
+.app-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: transparent;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Header Area */
+.app-header {
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--surface-border);
+  background: rgba(11, 15, 25, 0.6);
+  backdrop-filter: blur(10px);
+  z-index: 500;
+}
+
+.app-title {
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #fff 30%, var(--accent-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Content Container (Scrollable) */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  padding-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Hide scrollbar for clean app experience */
+.app-content::-webkit-scrollbar {
+  display: none;
+}
+.app-content {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Bottom Tab Navigation */
+.app-nav {
+  height: 68px;
+  background: rgba(13, 17, 28, 0.85);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--surface-border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: 8px; /* Room for home indicator */
+  z-index: 500;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--transition-speed);
+  position: relative;
+  width: 70px;
+}
+
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+  transition: transform var(--transition-speed), filter var(--transition-speed);
+}
+
+.nav-item.active {
+  color: var(--accent-cyan);
+}
+
+.nav-item.active svg {
+  filter: drop-shadow(0 0 6px var(--accent-cyan-glow));
+}
+
+/* Middle Add Button Special styling */
+.nav-item-add {
+  top: -12px;
+  height: 52px;
+  width: 52px;
+  background: linear-gradient(135deg, var(--accent-cyan), hsl(200, 100%, 45%));
+  border-radius: 50%;
+  color: #0b0f19 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 15px var(--accent-cyan-glow);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.nav-item-add svg {
+  width: 26px;
+  height: 26px;
+  fill: #0b0f19;
+  filter: none !important;
+}
+
+.nav-item-add:hover, .nav-item-add.active {
+  transform: scale(1.08);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
+}
+
+/* Home Indicator */
+.home-indicator {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* Screen Transitions */
+.app-screen {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeIn var(--transition-speed) ease;
+}
+
+.app-screen.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   CARDS & CONTAINERS (Glassmorphism)
+   ========================================================================== */
+.glass-card {
+  background: var(--surface-color);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius-md);
+  padding: 16px;
+  backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* ==========================================================================
+   TAB 1: DASHBOARD & GRAPH SCREEN
+   ========================================================================== */
+
+/* Battery Progress Bar */
+.battery-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.battery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.battery-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.battery-percent {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-weight);
+  text-shadow: 0 0 10px var(--color-weight-glow);
+}
+
+/* Battery Visual Shape */
+.battery-outer {
+  position: relative;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--border-radius-sm);
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  width: calc(100% - 12px);
+}
+
+.battery-tip {
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.15);
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-left: none;
+}
+
+.battery-inner {
+  height: 100%;
+  width: 0%; /* Dynamic fill */
+  background: linear-gradient(to right, hsl(140, 80%, 45%), var(--color-weight));
+  border-radius: 4px;
+  transition: width 0.8s cubic-bezier(0.1, 0.8, 0.2, 1);
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Segment separators in battery */
+.battery-segments {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  pointer-events: none;
+}
+
+.battery-segment-line {
+  flex: 1;
+  border-right: 2px solid #0b0f19;
+  height: 100%;
+}
+.battery-segment-line:last-child {
+  border-right: none;
+}
+
+/* Weight goal statistics text */
+.weight-status-sub {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  padding: 0 4px;
+}
+
+/* Chart Header & Controls */
+.chart-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.chart-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* Dropdown Menu for overlays */
+.dropdown-container {
+  position: relative;
+}
+
+.btn-dropdown {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--surface-border);
+  color: var(--text-primary);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background var(--transition-speed);
+}
+
+.btn-dropdown:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #111624;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius-sm);
+  padding: 8px;
+  z-index: 600;
+  width: 175px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+}
+
+.dropdown-menu.active {
+  display: block;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+  user-select: none;
+}
+
+.color-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.dropdown-item input[type="checkbox"] {
+  accent-color: var(--accent-cyan);
+  cursor: pointer;
+}
+
+/* Period selector buttons */
+.period-selector {
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius-sm);
+  padding: 3px;
+  margin-bottom: 12px;
+}
+
+.btn-period {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 6px 0;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-period.active {
+  background: var(--surface-border);
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* Canvas styling */
+.chart-wrapper {
+  height: 220px;
+  position: relative;
+  width: 100%;
+}
+
+/* Summary stats card */
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.stat-val {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.stat-val.intake { color: var(--color-intake); }
+.stat-val.burn { color: var(--color-burn); }
+.stat-val.deficit { color: var(--color-deficit); }
+.stat-val.weight { color: var(--color-weight); }
+
+/* ==========================================================================
+   TAB 2: CALENDAR & LOGGER SCREEN
+   ========================================================================== */
+
+/* Calendar Heading & Navigation */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.calendar-month {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Calendar Grid */
+.calendar-days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.calendar-cell {
+  aspect-ratio: 1 / 1.15;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius-sm);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  transition: all 0.2s;
+  cursor: not-allowed;
+  opacity: 0.4;
+  user-select: none;
+}
+
+/* Enable only clickable cell (today) */
+.calendar-cell.active-today {
+  opacity: 1;
+  cursor: pointer;
+  background: var(--surface-color);
+  border: 1.5px solid var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+}
+
+.calendar-cell.active-today .day-number {
+  color: var(--accent-cyan);
+  font-weight: 800;
+}
+
+/* Past cells that have logged records */
+.calendar-cell.has-data {
+  opacity: 1;
+  cursor: default;
+  background: rgba(13, 20, 35, 0.6);
+}
+
+.day-number {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.day-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: 8px;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.day-stat-dot {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 1px 2px;
+  border-radius: 2px;
+}
+.ds-weight {
+  color: var(--color-weight);
+  background: rgba(145, 80, 50, 0.05);
+}
+.ds-intake {
+  color: var(--color-intake);
+  background: rgba(24, 100, 60, 0.05);
+}
+.ds-burn {
+  color: var(--color-burn);
+  background: rgba(330, 100, 65, 0.05);
+}
+.ds-deficit {
+  color: var(--color-deficit);
+  background: rgba(195, 100, 50, 0.05);
+}
+
+/* Empty spacer cells */
+.calendar-cell.empty {
+  background: transparent;
+  border: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 가입 이전 날짜: 흐리고 클릭 불가 */
+.calendar-cell.before-join {
+  opacity: 0.15;
+  cursor: not-allowed;
+  background: transparent;
+  border-color: transparent;
+  pointer-events: none;
+}
+
+/* 가입 이후 미기록 날짜: 연하게 표시 */
+.calendar-cell.missed-day {
+  opacity: 0.5;
+  cursor: default;
+  border-color: rgba(255, 100, 100, 0.15);
+}
+
+/* ==========================================================================
+   TAB 3: PROFILE SCREEN
+   ========================================================================== */
+.profile-action-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.profile-actions-left {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-profile-act {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--surface-border);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-profile-act:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+.btn-profile-act.danger:hover {
+  background: rgba(220, 38, 38, 0.2);
+  border-color: rgba(220, 38, 38, 0.4);
+  color: #ff6b6b;
+}
+
+.btn-watch-connect {
+  background: rgba(0, 240, 255, 0.08);
+  border: 1.5px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  box-shadow: 0 0 6px var(--accent-cyan-glow);
+}
+
+.btn-watch-connect:hover {
+  background: var(--accent-cyan);
+  color: #0b0f19;
+  box-shadow: 0 0 15px var(--accent-cyan);
+}
+
+.btn-watch-connect.connected {
+  background: rgba(145, 80, 50, 0.1);
+  border-color: var(--color-weight);
+  color: var(--color-weight);
+  box-shadow: 0 0 6px var(--color-weight-glow);
+}
+
+.btn-watch-connect svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+/* Profile details layout */
+.profile-avatar-sec {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+.profile-avatar-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(255, 0, 128, 0.1));
+  border: 2px solid var(--surface-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+}
+
+.profile-username {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* User demographic parameters grid */
+.demographics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.demo-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius-sm);
+  padding: 8px;
+  text-align: center;
+}
+
+.demo-title {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.demo-val {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Core calculated formulas stats card */
+.calculated-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.calc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+.calc-row:last-child {
+  border-bottom: none;
+}
+
+.calc-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.calc-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.calc-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.calc-result {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--accent-cyan);
+}
+
+/* ==========================================================================
+   MODALS AND INPUT POPUPS
+   ========================================================================== */
+
+/* Dark Overlay Backdrop */
+.modal-overlay {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 7, 12, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  justify-content: center;
+  align-items: flex-end; /* Slides from bottom like mobile modal */
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+/* Glassmorphic Slide-up Sheet */
+.modal-sheet {
+  background: #0f1322;
+  border-top: 1.5px solid var(--surface-border);
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+  width: 100%;
+  max-height: 85%;
+  padding: 24px 20px;
+  overflow-y: auto;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  animation: slideUp 0.35s cubic-bezier(0.1, 0.8, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.btn-close {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: var(--text-secondary);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Form Styling */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.form-input {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--surface-border);
+  color: var(--text-primary);
+  padding: 10px 14px;
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-family);
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  border-color: var(--accent-cyan);
+  outline: none;
+  box-shadow: 0 0 8px var(--accent-cyan-glow);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Toggle Option buttons (Gender) */
+.gender-toggle {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-toggle-option {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--surface-border);
+  color: var(--text-secondary);
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-toggle-option.active {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: var(--accent-cyan);
+  color: var(--text-primary);
+  box-shadow: 0 0 10px var(--accent-cyan-glow);
+}
+
+/* Core Buttons */
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-cyan), hsl(200, 100%, 45%));
+  color: #0b0f19;
+  border: none;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px var(--accent-cyan-glow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 240, 255, 0.5);
+}
+
+/* ==========================================================================
+   DAILY LOGGER SPLIT CONTENT
+   ========================================================================== */
+.split-logger-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.logger-section-divider {
+  height: 1px;
+  background: var(--surface-border);
+  margin: 4px 0;
+}
+
+/* Top Panel: Food Calorie Intake styling */
+.intake-log-sec {
+  border-left: 3px solid var(--color-intake);
+  padding-left: 12px;
+}
+
+.section-label {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.section-label.intake { color: var(--color-intake); }
+.section-label.burn { color: var(--color-burn); }
+
+/* Food Photo Frame */
+.photo-upload-frame {
+  margin-top: 10px;
+  height: 90px;
+  border: 1px dashed var(--surface-border);
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.01);
+  color: var(--text-muted);
+  font-size: 11px;
+  gap: 6px;
+  transition: all 0.2s;
+  overflow: hidden;
+  position: relative;
+}
+.photo-upload-frame:hover {
+  border-color: var(--color-intake);
+  background: rgba(24, 100, 60, 0.03);
+  color: var(--text-secondary);
+}
+
+.photo-upload-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Simulated AI Analysis Loading effect */
+.ai-loading-box {
+  display: none;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: var(--border-radius-sm);
+  padding: 10px;
+  font-size: 11px;
+  color: var(--accent-cyan);
+  text-align: center;
+  margin-top: 10px;
+  animation: pulseGlow 1.5s infinite alternate;
+}
+
+@keyframes pulseGlow {
+  from { box-shadow: inset 0 0 5px rgba(0, 240, 255, 0.1); }
+  to { box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.3); }
+}
+
+/* TDEE & Smartwatch synchronization details */
+.burn-log-sec {
+  border-left: 3px solid var(--color-burn);
+  padding-left: 12px;
+}
+
+.watch-sync-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius-sm);
+  padding: 10px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sync-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.btn-sync-trigger {
+  background: rgba(255, 0, 128, 0.08);
+  border: 1px solid var(--color-burn);
+  color: var(--color-burn);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-sync-trigger:hover {
+  background: var(--color-burn);
+  color: #0b0f19;
+}
+
+.watch-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  font-size: 9px;
+  color: var(--text-secondary);
+}
+
+.w-stat {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px 6px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.w-label { color: var(--text-muted); margin-bottom: 2px; }
+.w-val { font-weight: 700; color: var(--text-primary); }
+
+.coefficient-output {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  border-left: 2px solid var(--color-weight);
+}
+
+/* Push Notification Toast Style */
+.push-toast {
+  position: absolute;
+  top: -80px; /* Hidden initially */
+  left: 16px;
+  right: 16px;
+  background: rgba(17, 22, 37, 0.95);
+  border: 1.5px solid var(--accent-cyan);
+  box-shadow: 0 10px 30px rgba(0, 240, 255, 0.25);
+  border-radius: var(--border-radius-md);
+  padding: 12px 16px;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.push-toast.show {
+  top: 54px; /* Slide down inside phone boundary */
+}
+
+.push-icon {
+  background: rgba(0, 240, 255, 0.1);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--accent-cyan);
+  font-size: 16px;
+}
+
+.push-body {
+  flex: 1;
+}
+
+.push-title {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.push-desc {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+/* Bluetooth Scanner modal styling */
+.bluetooth-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.device-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.device-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--surface-border);
+  padding: 10px 14px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.device-item:hover {
+  background: rgba(0, 240, 255, 0.05);
+  border-color: var(--accent-cyan);
+}
+
+.device-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.device-name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.device-rssi {
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+.device-status {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-cyan);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (Adaptive for mobile screens)
+   ========================================================================== */
+@media (max-width: 500px) {
+  body {
+    background: #0b0f19;
+    align-items: flex-start;
+  }
+  .phone-wrapper {
+    width: 100vw;
+    height: 100vh;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .phone-notch {
+    display: none;
+  }
+  .phone-status-bar {
+    height: 34px;
+    padding-bottom: 2px;
+  }
+  .push-toast.show {
+    top: 40px;
+  }
+}
+
+/* AI Settings Card styling */
+.ai-settings-card {
+  border-left: 3px solid var(--accent-cyan);
+}
+
+
+</style>
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Phone Bezel Mockup Frame for Premium Desktop Experience -->
+  <div class="phone-wrapper">
+    <!-- Camera Notch -->
+    <div class="phone-notch"></div>
+    
+    <!-- Phone Status Bar -->
+    <div class="phone-status-bar">
+      <div class="status-left">09:41</div>
+      <div class="status-right">
+        <!-- Signal Icon -->
+        <svg class="status-icon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.4c3.9 3.51 9.94 3.2 13.45-.71 3.51-3.9 3.2-9.94-.71-13.45C15.54 3.93 13.8 3 12 3zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
+        <!-- Wifi Icon -->
+        <svg class="status-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        <!-- Battery Icon -->
+        <svg class="status-icon" viewBox="0 0 24 24"><path d="M17 5H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm-1 11H4V8h12v8z"/></svg>
+      </div>
+    </div>
+    
+    <!-- In-App Floating Push Notification Toast -->
+    <div id="push-notification" class="push-toast">
+      <div class="push-icon">🔔</div>
+      <div class="push-body">
+        <div id="push-title" class="push-title">다이어트 알림</div>
+        <div id="push-desc" class="push-desc">오늘의 체중과 식단을 아직 입력하지 않았습니다!</div>
+      </div>
+    </div>
+    
+    <!-- Application Main Container -->
+    <div class="app-container">
+      
+      <!-- Top Title Header -->
+      <header class="app-header">
+        <span class="app-title">FitSync AI</span>
+        <div style="font-size: 11px; color: var(--text-secondary); font-weight: 500;">Smartwatch Linked</div>
+      </header>
+      
+      <!-- App Main Content (Scrollable Container) -->
+      <main class="app-content">
+        
+        <!-- ==========================================
+             SCREEN 1: DASHBOARD & CHARTS (Left Tab)
+             ========================================== -->
+        <section id="screen-dashboard" class="app-screen active">
+          
+          <!-- Battery Weight Loss Progress Indicator -->
+          <div class="glass-card">
+            <div class="battery-container">
+              <div class="battery-header">
+                <span class="battery-title">목표 체중 달성률</span>
+                <span id="battery-value-pct" class="battery-percent">0%</span>
+              </div>
+              <div style="display: flex; align-items: center;">
+                <div class="battery-outer">
+                  <div id="battery-fill" class="battery-inner"></div>
+                  <div class="battery-segments">
+                    <div class="battery-segment-line"></div>
+                    <div class="battery-segment-line"></div>
+                    <div class="battery-segment-line"></div>
+                    <div class="battery-segment-line"></div>
+                  </div>
+                </div>
+                <div class="battery-tip"></div>
+              </div>
+            </div>
+            <div class="weight-status-sub">
+              <span id="battery-start-w">시작: 0.0kg</span>
+              <span id="battery-current-w" style="font-weight: 700; color: var(--text-primary);">현재: 0.0kg</span>
+              <span id="battery-target-w">목표: 0.0kg</span>
+            </div>
+          </div>
+          
+          <!-- Chart Control Options -->
+          <div class="glass-card" style="padding-bottom: 12px;">
+            <div class="chart-controls">
+              <span class="chart-title">다이어트 트렌드</span>
+              
+              <!-- Multi-line Overlay Selectors -->
+              <div class="dropdown-container">
+                <button id="btn-graph-dropdown" class="btn-dropdown">
+                  <span>그래프 선택</span>
+                  <svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 5 5-5z"/></svg>
+                </button>
+                <div id="graph-dropdown-menu" class="dropdown-menu">
+                  <label class="dropdown-item">
+                    <input type="checkbox" id="chk-metric-intake">
+                    <span class="color-dot" style="background-color: hsl(24, 100%, 60%);"></span>
+                    섭취 칼로리
+                  </label>
+                  <label class="dropdown-item">
+                    <input type="checkbox" id="chk-metric-burn">
+                    <span class="color-dot" style="background-color: hsl(330, 100%, 65%);"></span>
+                    소비 칼로리
+                  </label>
+                  <label class="dropdown-item">
+                    <input type="checkbox" id="chk-metric-deficit">
+                    <span class="color-dot" style="background-color: hsl(195, 100%, 50%);"></span>
+                    칼로리 적자
+                  </label>
+                  <label class="dropdown-item">
+                    <input type="checkbox" id="chk-metric-cumulative" checked>
+                    <span class="color-dot" style="background-color: hsl(270, 100%, 65%);"></span>
+                    누적 칼로리 적자
+                  </label>
+                  <label class="dropdown-item">
+                    <input type="checkbox" id="chk-metric-weight" checked>
+                    <span class="color-dot" style="background-color: hsl(145, 80%, 50%);"></span>
+                    몸무게 적자량
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Period Selector Tabs -->
+            <div class="period-selector">
+              <button class="btn-period active" data-period="day">하루</button>
+              <button class="btn-period" data-period="week">일주일 평균</button>
+              <button class="btn-period" data-period="month">한달 평균</button>
+            </div>
+            
+            <!-- Chart.js Container -->
+            <div class="chart-wrapper">
+              <canvas id="dietChartCanvas"></canvas>
+            </div>
+          </div>
+          
+          <!-- Today's Numerical Log Summary -->
+          <div class="glass-card summary-grid">
+            <div class="stat-item">
+              <span class="stat-label">오늘 몸무게</span>
+              <span id="dash-stat-weight" class="stat-val weight">-- kg</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">오늘 섭취</span>
+              <span id="dash-stat-intake" class="stat-val intake">0 kcal</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">오늘 소비 (TDEE)</span>
+              <span id="dash-stat-burn" class="stat-val burn">0 kcal</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">오늘 칼로리 적자</span>
+              <span id="dash-stat-deficit" class="stat-val deficit">0 kcal</span>
+            </div>
+          </div>
+        </section>
+        
+        <!-- ==========================================
+             SCREEN 2: CALENDAR LOGS (Center Tab)
+             ========================================== -->
+        <section id="screen-calendar" class="app-screen">
+          <div class="glass-card">
+            <div class="calendar-header">
+              <span id="calendar-month-name" class="calendar-month">2026년 6월</span>
+              <span style="font-size: 11px; color: var(--text-muted);">오늘만 기록 가능</span>
+            </div>
+            
+            <!-- Day of week header -->
+            <div class="calendar-days-header">
+              <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+            </div>
+            
+            <!-- Custom Dynamic Calendar Grid Container -->
+            <div id="calendar-grid-container" class="calendar-grid">
+              <!-- Days are dynamically rendered from JS -->
+            </div>
+          </div>
+        </section>
+        
+        <!-- ==========================================
+             SCREEN 3: USER PROFILE (Right Tab)
+             ========================================== -->
+        <section id="screen-profile" class="app-screen">
+          <div class="profile-action-header">
+            <div class="profile-actions-left">
+              <button id="btn-profile-edit" class="btn-profile-act">수정</button>
+              <button id="btn-profile-reset" class="btn-profile-act danger">초기화</button>
+            </div>
+            <!-- Bluetooth Connection Button -->
+            <button id="btn-watch-sync" class="btn-watch-connect">
+              <svg viewBox="0 0 24 24"><path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.29L13 18.17v-3.76l1.88 1.88z"/></svg>
+              블루투스 연동
+            </button>
+          </div>
+          
+          <!-- Profile Card -->
+          <div class="glass-card">
+            <div class="profile-avatar-sec">
+              <div class="profile-avatar-circle">⚡</div>
+              <span class="profile-username">다이어터 님</span>
+            </div>
+            
+            <!-- User demographic inputs display -->
+            <div class="demographics-grid">
+              <div class="demo-box">
+                <div class="demo-title">성별</div>
+                <div id="prof-gender" class="demo-val">--</div>
+              </div>
+              <div class="demo-box">
+                <div class="demo-title">나이</div>
+                <div id="prof-age" class="demo-val">--</div>
+              </div>
+              <div class="demo-box">
+                <div class="demo-title">키</div>
+                <div id="prof-height" class="demo-val">-- cm</div>
+              </div>
+            </div>
+            
+            <div class="demographics-grid" style="margin-top: 10px;">
+              <div class="demo-box" style="grid-column: span 1.5;">
+                <div class="demo-title">시작 체중</div>
+                <div id="prof-weight" class="demo-val">-- kg</div>
+              </div>
+              <div class="demo-box" style="grid-column: span 1.5;">
+                <div class="demo-title">목표 체중</div>
+                <div id="prof-target" class="demo-val">-- kg</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- BMR & BMI dynamically updated based on daily weight records -->
+          <div class="glass-card calculated-stats">
+            <div class="calc-row">
+              <div class="calc-info">
+                <span class="calc-label">오늘 아침 체중</span>
+                <span class="calc-sub">매일 아침 공복 측정 체중 기준</span>
+              </div>
+              <span id="prof-real-weight" class="calc-result" style="color: var(--color-weight);">-- kg</span>
+            </div>
+            
+            <div class="calc-row">
+              <div class="calc-info">
+                <span class="calc-label">기초 대사량 (BMR)</span>
+                <span class="calc-sub">Mifflin-St Jeor 계산 공식 적용</span>
+              </div>
+              <span id="prof-real-bmr" class="calc-result">-- kcal</span>
+            </div>
+            
+            <div class="calc-row">
+              <div class="calc-info">
+                <span class="calc-label">BMI 지수</span>
+                <span class="calc-sub">체질량지수 (<span id="prof-bmi-desc" style="font-weight: 700;">정상</span>)</span>
+              </div>
+              <span id="prof-real-bmi" class="calc-result" style="color: var(--accent-cyan);">--</span>
+            </div>
+          </div>
+        </section>
+        
+      </main>
+      
+      <!-- Bottom Navigation Bar -->
+      <nav class="app-nav">
+        <!-- Graphs Tab -->
+        <a href="#" class="nav-item active" data-screen="dashboard">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+          <span>통계 그래프</span>
+        </a>
+        
+        <!-- Add Calorie Logger Tab -->
+        <a href="#" class="nav-item nav-item-add" data-screen="calendar">
+          <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </a>
+        
+        <!-- Profile Tab -->
+        <a href="#" class="nav-item" data-screen="profile">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <span>사용자 프로필</span>
+        </a>
+      </nav>
+      
+      <!-- Home Swipe Indicator -->
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODALS & OVERLAYS
+       ========================================================================== -->
+  
+  <!-- 1. Initial Onboarding Modal (Profile input on first launch) -->
+  <div id="modal-onboarding" class="modal-overlay">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <span class="modal-title">반갑습니다! 다이어트 계획 시작</span>
+      </div>
+      <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
+        기초 대사량과 BMI 지수를 계산하고, 다이어트 여정을 트래킹하기 위해 필수 신체 프로필을 입력해주세요.
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">성별</label>
+        <div class="gender-toggle">
+          <button type="button" id="btn-onboard-male" class="btn-toggle-option">남성</button>
+          <button type="button" id="btn-onboard-female" class="btn-toggle-option active">여성</button>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">생년월일 (나이 계산용)</label>
+        <input type="date" id="onboard-dob" class="form-input">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">키 (cm, 소수점 첫째자리)</label>
+        <input type="number" id="onboard-height" class="form-input" placeholder="예: 173.5" step="0.1">
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">현재 체중 (kg)</label>
+          <input type="number" id="onboard-weight" class="form-input" placeholder="예: 68.5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">목표 체중 (kg)</label>
+          <input type="number" id="onboard-target" class="form-input" placeholder="예: 55.0" step="0.1">
+        </div>
+      </div>
+      
+      <button id="btn-save-onboarding" class="btn-primary" style="margin-top: 8px;">시작하기</button>
+    </div>
+  </div>
+
+  <!-- 2. Edit Profile Modal -->
+  <div id="modal-edit-profile" class="modal-overlay">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <span class="modal-title">프로필 정보 수정</span>
+        <button class="btn-close">&times;</button>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">성별</label>
+        <div class="gender-toggle">
+          <button type="button" id="btn-edit-male" class="btn-toggle-option">남성</button>
+          <button type="button" id="btn-edit-female" class="btn-toggle-option">여성</button>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">생년월일</label>
+        <input type="date" id="edit-dob" class="form-input">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">키 (cm)</label>
+        <input type="number" id="edit-height" class="form-input" step="0.1">
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">현재 체중 (kg)</label>
+          <input type="number" id="edit-weight" class="form-input" step="0.1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">목표 체중 (kg)</label>
+          <input type="number" id="edit-target" class="form-input" step="0.1">
+        </div>
+      </div>
+      
+      <button id="btn-save-edit" class="btn-primary" style="margin-top: 8px;">저장하기</button>
+    </div>
+  </div>
+
+  <!-- 3. Bluetooth Scanner Modal (Real Web Bluetooth) -->
+  <div id="modal-bluetooth" class="modal-overlay">
+    <div class="modal-sheet bluetooth-modal">
+      <div class="modal-header">
+        <span class="modal-title" id="bluetooth-modal-title">블루투스 스마트 워치 연동</span>
+        <button class="btn-close">&times;</button>
+      </div>
+      
+      <div id="bluetooth-status-container" style="text-align: center; padding: 12px 0; display: flex; flex-direction: column; gap: 14px;">
+        <!-- JS가 동적으로 연결 유도 설명 또는 기기 해제 UI를 주입합니다. -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Main Intake & Burn Logging Modal (Opens when clicking Today in Calendar) -->
+  <div id="logger-modal" class="modal-overlay">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <span id="logger-modal-title" class="modal-title">날짜 기록</span>
+        <button class="btn-close">&times;</button>
+      </div>
+      
+      <!-- STEP 1: Morning Empty Stomach Weight Prompt (Compulsory first step) -->
+      <div id="logger-step-weight" class="form-group" style="display: flex; flex-direction: column; gap: 14px; text-align: center;">
+        <div style="font-size: 26px;">⚖️</div>
+        <h3>아침 공복 체중 기록</h3>
+        <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.5;">
+          다이어트 진척도를 정확히 판단하기 위해<br>오늘 아침 공복 상태의 체중을 먼저 기록해주세요.
+        </p>
+        <div class="form-group" style="width: 100%; margin: 10px 0;">
+          <input type="number" id="input-morning-weight" class="form-input" placeholder="몸무게 입력 (kg, 예: 64.2)" step="0.1" style="text-align: center; font-size: 18px; font-weight: 700; padding: 12px;">
+        </div>
+        <button id="btn-save-weight" class="btn-primary" style="width: 100%;">체중 기록 완료</button>
+      </div>
+      
+      <!-- STEP 2: Calorie Logger Split Screens (Intake top, TDEE burn bottom) -->
+      <div id="logger-step-split" class="split-logger-container" style="display: none;">
+        
+        <!-- Editable Weight -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--surface-border); margin-bottom: 8px;">
+          <div style="font-size: 14px; display: flex; align-items: center; gap: 8px;">
+            아침 공복 체중: 
+            <input type="number" id="inline-edit-weight" step="0.1" style="width: 80px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: var(--color-weight); font-weight: bold; border-radius: 6px; padding: 4px 8px; text-align: center; font-size: 14px;"> kg
+          </div>
+        </div>
+
+        <!-- Top Section: Calories intake (섭취 칼로리 추가) -->
+        <div class="intake-log-sec">
+          <div class="section-label intake">🍎 섭취 칼로리 기록</div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">음식 명칭</label>
+              <input type="text" id="input-food-name" class="form-input" placeholder="예: 닭가슴살 샐러드">
+            </div>
+            <div class="form-group">
+              <label class="form-label">무게 (g)</label>
+              <input type="number" id="input-food-weight" class="form-input" placeholder="예: 250">
+            </div>
+          </div>
+          
+          <!-- Mock Photo Frame upload -->
+          <div id="food-photo-preview" class="photo-upload-frame">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0-2-.9-2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            <span>음식 사진 촬영 또는 첨부 (선택)</span>
+          </div>
+          
+          <!-- Simulated AI calorie scan loading bar -->
+          <div id="food-ai-loader" class="ai-loading-box"></div>
+          
+          <button id="btn-save-food" class="btn-primary" style="background: linear-gradient(135deg, var(--color-intake), hsl(20, 100%, 50%)); color: #fff; box-shadow: 0 4px 15px var(--color-intake-glow); margin-top: 10px; width: 100%;">
+            음식 추가 및 AI 칼로리 추정
+          </button>
+          
+          <!-- Today's logged foods list -->
+          <div style="margin-top: 14px;">
+            <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 600;">등록된 음식</div>
+            <div id="logged-food-list" style="max-height: 90px; overflow-y: auto;">
+              <!-- Javascript populates -->
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-top: 6px; font-weight: 700; border-top: 1px solid var(--surface-border); padding-top: 6px;">
+              <span>총 섭취 칼로리:</span>
+              <span id="logger-total-intake" style="color: var(--color-intake);">0 kcal</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="logger-section-divider"></div>
+        
+        <!-- Bottom Section: TDEE Expended (소모 칼로리 기록 / 활동계수 도출) -->
+        <div class="burn-log-sec">
+          <div class="section-label burn">🏃 소모 칼로리 기록 (TDEE)</div>
+          
+          <!-- BMR Value imported automatically -->
+          <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px;">
+            <span>오늘 기초대사량 (BMR):</span>
+            <strong id="logger-bmr-val" style="color: var(--text-primary);">-- kcal</strong>
+          </div>
+          
+          <!-- Smartwatch Bluetooth Active Sync panel -->
+          <button id="btn-smartwatch-sync-trigger" class="btn-primary" style="background: linear-gradient(135deg, var(--color-burn), hsl(320, 100%, 50%)); color: #fff; box-shadow: 0 4px 15px var(--color-burn-glow); width: 100%;">
+            스마트 워치 동기화 & 활동 계수 도출
+          </button>
+          
+          <!-- Sync statistics panel -->
+          <div id="sync-watch-stats-grid" class="watch-sync-box" style="display: none;">
+            <div class="sync-status-row" style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 600; color: var(--color-weight);">✓ 스마트 워치 동기화 완료</span>
+              <button type="button" id="btn-reset-watch-sync" onclick="resetSmartwatchSync()" style="background: transparent; border: none; color: #ef4444; font-size: 11px; cursor: pointer; text-decoration: underline; font-weight: 600; padding: 0;">초기화</button>
+            </div>
+            <div class="watch-stats-grid" style="grid-template-columns: 1fr 2fr;">
+              <div class="w-stat"><div class="w-label">평균 심박</div><div id="watch-val-hr" class="w-val">--</div></div>
+              <div class="w-stat"><div class="w-label">활동 분석</div><div id="watch-val-detail" class="w-val" style="font-size: 10px; line-height: 1.3;">--</div></div>
+            </div>
+          </div>
+          
+          <!-- Activity Coefficient Calculation results -->
+          <div id="watch-coeff-output" class="coefficient-output" style="margin-top: 10px; display: none;">
+            <div>
+              <div style="font-size: 9px; color: var(--text-muted);">산출된 AI 활동계수</div>
+              <div style="font-size: 15px; font-weight: 800; color: var(--color-weight);"><span id="txt-coeff-val">--</span></div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 9px; color: var(--text-muted);">최종 일일 소모 칼로리 (TDEE)</div>
+              <div style="font-size: 15px; font-weight: 800; color: var(--color-burn);"><span id="txt-tdee-val">-- kcal</span></div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
+  <!-- Core script dependencies linking -->
+  <script>
+// Smartwatch Diet Tracker Core Logic
+
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// 0. AI API 및 시뮬레이터 설정
+// --------------------------------------------------------------------------
+
+const OPENAI_API_KEY = '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';
+const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
+
+// OpenAI 텍스트 요청 공통 함수
+async function callOpenAI(prompt) {
+  const res = await fetch(OPENAI_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err?.error?.message || '알 수 없는 오류');
+  }
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content?.trim() || '';
+}
+
+// OpenAI 이미지 + 텍스트 요청 공통 함수
+async function callOpenAIWithImage(prompt, fullDataUri) {
+  const res = await fetch(OPENAI_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      messages: [{
+        role: 'user',
+        content: [
+          { type: 'text', text: prompt },
+          { type: 'image_url', image_url: { url: fullDataUri } }
+        ]
+      }]
+    })
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err?.error?.message || '알 수 없는 오류');
+  }
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content?.trim() || '';
+}
+
+// 오프라인 음식 분석 시뮬레이터 함수
+function mockFoodAnalysis(foodName, foodWeight) {
+  const foodDatabase = {
+    '닭가슴살': { kcal: 165, desc: '고단백질 저지방 식품으로 다이어트에 적합합니다.' },
+    '고구마': { kcal: 86, desc: '복합 탄수화물과 식이섬유가 풍부해 포만감을 줍니다.' },
+    '사과': { kcal: 52, desc: '비타민 C와 식이섬유가 많은 과일입니다.' },
+    '현미밥': { kcal: 111, desc: '정제되지 않은 곡물로 혈당 지수가 낮습니다.' },
+    '바나나': { kcal: 89, desc: '탄수화물과 칼륨이 풍부해 에너지를 줍니다.' },
+    '샐러드': { kcal: 20, desc: '칼로리가 매우 낮고 비타민과 무기질이 풍부합니다.' },
+    '달걀': { kcal: 155, desc: '질 좋은 단백질과 지방이 골고루 함유된 완벽한 식품입니다.' },
+    '소고기': { kcal: 250, desc: '단백질과 철분이 풍부한 영양가 높은 육류입니다.' },
+    '두부': { kcal: 76, desc: '식물성 단백질이 풍부하고 수분 함량이 높습니다.' },
+    '우유': { kcal: 65, desc: '칼슘과 단백질이 풍부한 유제품입니다.' }
+  };
+
+  let baseKcal = 120; // 100g당 기본 칼로리
+  let desc = '균형 잡힌 다이어트 식단입니다. 수분과 식이섬유 섭취에 유의하세요.';
+  
+  for (const [key, val] of Object.entries(foodDatabase)) {
+    if (foodName.includes(key)) {
+      baseKcal = val.kcal;
+      desc = val.desc;
+      break;
+    }
+  }
+
+  const finalKcal = Math.round((baseKcal * foodWeight) / 100);
+  const margin = Math.round(finalKcal * 0.08);
+
+  return {
+    kcal: finalKcal,
+    margin: margin,
+    description: `[오프라인 시뮬레이션 모드] ${desc}`
+  };
+}
+
+// 오프라인 스마트워치 분석 시뮬레이터 함수
+function mockWatchAnalysis(watchData) {
+  let factor = 1.2;
+  let level = '거의 운동 없음';
+  let detail = '안정시 심박수 범위로 주로 정적인 휴식을 취했습니다.';
+
+  const hr = watchData.avgHeartRate;
+  if (hr >= 130) {
+    factor = 1.9;
+    level = '초고강도 활동';
+    detail = '평균 심박수가 매우 높아 대단히 격렬한 운동을 수행한 것으로 파악됩니다.';
+  } else if (hr >= 111) {
+    factor = 1.725;
+    level = '매우 활동적';
+    detail = '평균 심박수가 110 bpm을 상회하여 강도 높은 유산소 활동을 수행했습니다.';
+  } else if (hr >= 91) {
+    factor = 1.55;
+    level = '보통 활동';
+    detail = '평균 심박수가 적절히 상승하여 일상적인 활동과 가벼운 운동이 병행되었습니다.';
+  } else if (hr >= 76) {
+    factor = 1.375;
+    level = '가벼운 활동';
+    detail = '가벼운 걷기 등 완만한 일상 생활 수준의 심박수를 보였습니다.';
+  }
+
+  return {
+    factor: factor,
+    level: level,
+    detail: `[오프라인 시뮬레이션 모드] ${detail}`
+  };
+}
+
+
+// --------------------------------------------------------------------------
+// 1. Initial State & Storage Configuration
+// --------------------------------------------------------------------------
+let state = {
+  profile: null,        // { gender, dob, height, weight, targetWeight, startWeight, bmr, bmi, joinDate }
+  logs: {},             // Keyed by YYYY-MM-DD: { weight, intake: [{food, weight, kcal}], burn, activeFactor, smartwatchSync: {} }
+  bluetooth: {
+    connected: false,
+    deviceName: null
+  },
+  currentScreen: 'dashboard', // dashboard, calendar, profile
+  activeDate: null            // Selected date for logging (normally today)
+};
+
+const STORAGE_KEY = 'antigravity_diet_tracker_state';
+
+// Load state from localStorage
+function loadState() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      state = JSON.parse(saved);
+    } catch (e) {
+      console.error("Error parsing saved state", e);
+    }
+  }
+}
+
+// Save state to localStorage
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// --------------------------------------------------------------------------
+// 2. Mathematical Helper Functions
+// --------------------------------------------------------------------------
+
+// Calculate Age in Years from DOB string (YYYY/MM/DD or YYYY-MM-DD)
+function calculateAge(dobStr) {
+  const dob = new Date(dobStr.replace(/\//g, '-'));
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+  return Math.max(1, age);
+}
+
+// Mifflin-St Jeor BMR Equation
+function calculateBMR(gender, age, height, weight) {
+  if (gender === 'male') {
+    return Math.round(10 * weight + 6.25 * height - 5 * age + 5);
+  } else {
+    return Math.round(10 * weight + 6.25 * height - 5 * age - 161);
+  }
+}
+
+// BMI Equation
+function calculateBMI(height, weight) {
+  const heightM = height / 100;
+  return parseFloat((weight / (heightM * heightM)).toFixed(1));
+}
+
+// --------------------------------------------------------------------------
+// 3. Initialize Empty Logs on First Launch (No mock data)
+// --------------------------------------------------------------------------
+function initializeNewUser() {
+  if (!state.profile) return;
+  const prof = state.profile;
+
+  const age = calculateAge(prof.dob);
+  prof.bmr = calculateBMR(prof.gender, age, prof.height, prof.weight);
+  prof.bmi = calculateBMI(prof.height, prof.weight);
+
+  // 가입일부터 기록 시작 — 이전 데이터는 없음
+  state.logs = {};
+  saveState();
+}
+
+// --------------------------------------------------------------------------
+// 4. UI Rendering Functions
+// --------------------------------------------------------------------------
+
+// Switch Screen Active State
+function switchScreen(screenName) {
+  state.currentScreen = screenName;
+  document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const activeScreen = document.getElementById(`screen-${screenName}`);
+  if (activeScreen) activeScreen.classList.add('active');
+
+  const activeNav = document.querySelector(`.nav-item[data-screen="${screenName}"]`);
+  if (activeNav) activeNav.classList.add('active');
+
+  if (screenName === 'dashboard') {
+    renderDashboard();
+  } else if (screenName === 'calendar') {
+    renderCalendar();
+  } else if (screenName === 'profile') {
+    renderProfile();
+  }
+}
+
+// A. Profile View Rendering
+function renderProfile() {
+  if (!state.profile) return;
+  
+  const prof = state.profile;
+  
+  // Update demographics cards
+  document.getElementById('prof-gender').textContent = prof.gender === 'male' ? '남성' : '여성';
+  document.getElementById('prof-age').textContent = `만 ${calculateAge(prof.dob)}세`;
+  document.getElementById('prof-height').textContent = `${prof.height.toFixed(1)} cm`;
+  document.getElementById('prof-weight').textContent = `${prof.weight.toFixed(1)} kg`;
+  document.getElementById('prof-target').textContent = `${prof.targetWeight.toFixed(1)} kg`;
+  
+  // Real-time recalculated stats
+  // BMR and BMI calculations should adapt to today's recorded weight if logged
+  const todayStr = getTodayDateString();
+  const latestWeight = state.logs[todayStr]?.weight || prof.weight;
+  
+  const currentAge = calculateAge(prof.dob);
+  const currentBMR = calculateBMR(prof.gender, currentAge, prof.height, latestWeight);
+  const currentBMI = calculateBMI(prof.height, latestWeight);
+  
+  document.getElementById('prof-real-weight').textContent = `${latestWeight.toFixed(1)} kg`;
+  document.getElementById('prof-real-bmr').textContent = `${currentBMR} kcal`;
+  document.getElementById('prof-real-bmi').textContent = currentBMI;
+  
+  // BMI classification text
+  let bmiDesc = '정상';
+  let bmiColor = 'var(--color-weight)';
+  if (currentBMI < 18.5) {
+    bmiDesc = '저체중';
+    bmiColor = '#3b82f6';
+  } else if (currentBMI >= 23 && currentBMI < 25) {
+    bmiDesc = '과체중';
+    bmiColor = '#f59e0b';
+  } else if (currentBMI >= 25) {
+    bmiDesc = '비만';
+    bmiColor = '#ef4444';
+  }
+  
+  const bmiLabelNode = document.getElementById('prof-bmi-desc');
+  bmiLabelNode.textContent = bmiDesc;
+  bmiLabelNode.style.color = bmiColor;
+  
+  // Bluetooth Sync status indicator
+  const btnWatch = document.getElementById('btn-watch-sync');
+  if (state.bluetooth.connected) {
+    btnWatch.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1-5h-2v6h2V7zm0 8h-2v2h2v-2z"/></svg> ${state.bluetooth.deviceName}`;
+    btnWatch.classList.add('connected');
+  } else {
+    btnWatch.innerHTML = `<svg viewBox="0 0 24 24"><path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.29L13 18.17v-3.76l1.88 1.88z"/></svg> 블루투스 연동`;
+    btnWatch.classList.remove('connected');
+  }
+}
+
+// B. Dashboard / Charts Screen Rendering
+let dietChart = null; // Store Chart.js instance globally to reuse
+
+function renderDashboard() {
+  if (!state.profile) return;
+
+  const prof = state.profile;
+  const todayStr = getTodayDateString();
+  const latestWeight = state.logs[todayStr]?.weight || prof.weight;
+
+  // 1. Calculate Weight Loss Goal Progress (Battery)
+  // Progress = (Start - Current) / (Start - Target) * 100
+  let progressPct = 0;
+  if (prof.startWeight !== prof.targetWeight) {
+    const lossSoFar = prof.startWeight - latestWeight;
+    const totalGoal = prof.startWeight - prof.targetWeight;
+    progressPct = (lossSoFar / totalGoal) * 100;
+    progressPct = Math.max(0, Math.min(100, Math.round(progressPct))); // Bounded [0, 100]
+  }
+  
+  // Fill battery bar & text
+  document.getElementById('battery-fill').style.width = `${progressPct}%`;
+  document.getElementById('battery-value-pct').textContent = `${progressPct}%`;
+  document.getElementById('battery-start-w').textContent = `시작: ${prof.startWeight.toFixed(1)}kg`;
+  document.getElementById('battery-current-w').textContent = `현재: ${latestWeight.toFixed(1)}kg`;
+  document.getElementById('battery-target-w').textContent = `목표: ${prof.targetWeight.toFixed(1)}kg`;
+
+  // 2. Render summary stats inside dashboard
+  let todayIntakeKcal = 0;
+  let todayBurnKcal = 0;
+  if (state.logs[todayStr]) {
+    const todayLog = state.logs[todayStr];
+    todayIntakeKcal = (todayLog.intake || []).reduce((acc, f) => acc + f.kcal, 0);
+    todayBurnKcal = todayLog.burn || 0;
+  }
+  
+  const todayDeficit = todayBurnKcal - todayIntakeKcal;
+  document.getElementById('dash-stat-weight').textContent = `${latestWeight.toFixed(1)} kg`;
+  document.getElementById('dash-stat-intake').textContent = `${todayIntakeKcal} kcal`;
+  document.getElementById('dash-stat-burn').textContent = `${todayBurnKcal} kcal`;
+  document.getElementById('dash-stat-deficit').textContent = `${todayDeficit} kcal`;
+
+  // 3. Render Chart
+  renderChartData();
+}
+
+// Helper to determine active overlay metrics in checkbox dropdown
+function getActiveChartMetrics() {
+  const metrics = [];
+  if (document.getElementById('chk-metric-intake').checked) metrics.push('intake');
+  if (document.getElementById('chk-metric-burn').checked) metrics.push('burn');
+  if (document.getElementById('chk-metric-deficit').checked) metrics.push('deficit');
+  if (document.getElementById('chk-metric-cumulative').checked) metrics.push('cumulative');
+  if (document.getElementById('chk-metric-weight').checked) metrics.push('weight');
+  return metrics;
+}
+
+// Process and Draw Chart.js Line Chart
+function renderChartData() {
+  const activeMetrics = getActiveChartMetrics();
+  const period = document.querySelector('.btn-period.active').getAttribute('data-period'); // day, week, month
+
+  // Extract dates in chronological order
+  const sortedDates = Object.keys(state.logs).sort();
+  if (sortedDates.length === 0) return;
+
+  // Structure RAW days data array
+  let datasetRaw = sortedDates.map(dateStr => {
+    const log = state.logs[dateStr];
+    const intakeKcal = (log.intake || []).reduce((acc, f) => acc + f.kcal, 0);
+    const burnKcal = log.burn || 0;
+    const deficit = burnKcal - intakeKcal;
+    const startW = state.profile?.startWeight || state.profile?.weight || 0;
+    const weightDeficit = startW > 0 ? parseFloat((startW - log.weight).toFixed(1)) : 0;
+    return {
+      date: dateStr,
+      weight: log.weight,
+      weightDeficit: weightDeficit,
+      intake: intakeKcal,
+      burn: burnKcal,
+      deficit: deficit
+    };
+  });
+
+  // Calculate Cumulative Deficits chronologically
+  let cumulativeDeficitSum = 0;
+  datasetRaw.forEach(item => {
+    cumulativeDeficitSum += item.deficit;
+    item.cumulative = cumulativeDeficitSum;
+  });
+
+  // Group by selected period averages (day, week, month)
+  let finalData = [];
+  if (period === 'day') {
+    finalData = datasetRaw;
+  } else if (period === 'week') {
+    // Group into chunks of 7 days
+    let chunk = [];
+    let weekIndex = 1;
+    for (let i = 0; i < datasetRaw.length; i++) {
+      chunk.push(datasetRaw[i]);
+      if (chunk.length === 7 || i === datasetRaw.length - 1) {
+        // Average chunk values
+        const avgWeight = chunk.reduce((acc, item) => acc + item.weight, 0) / chunk.length;
+        const avgWeightDeficit = chunk.reduce((acc, item) => acc + item.weightDeficit, 0) / chunk.length;
+        const avgIntake = chunk.reduce((acc, item) => acc + item.intake, 0) / chunk.length;
+        const avgBurn = chunk.reduce((acc, item) => acc + item.burn, 0) / chunk.length;
+        const avgDeficit = chunk.reduce((acc, item) => acc + item.deficit, 0) / chunk.length;
+        // Cumulative is the latest value in this week
+        const latestCumulative = chunk[chunk.length - 1].cumulative;
+        
+        finalData.push({
+          date: `${weekIndex}주차`,
+          weight: parseFloat(avgWeight.toFixed(1)),
+          weightDeficit: parseFloat(avgWeightDeficit.toFixed(1)),
+          intake: Math.round(avgIntake),
+          burn: Math.round(avgBurn),
+          deficit: Math.round(avgDeficit),
+          cumulative: Math.round(latestCumulative)
+        });
+        chunk = [];
+        weekIndex++;
+      }
+    }
+  } else if (period === 'month') {
+    // Group into chunks of 30 days
+    let chunk = [];
+    let monthIndex = 1;
+    for (let i = 0; i < datasetRaw.length; i++) {
+      chunk.push(datasetRaw[i]);
+      if (chunk.length === 30 || i === datasetRaw.length - 1) {
+        const avgWeight = chunk.reduce((acc, item) => acc + item.weight, 0) / chunk.length;
+        const avgWeightDeficit = chunk.reduce((acc, item) => acc + item.weightDeficit, 0) / chunk.length;
+        const avgIntake = chunk.reduce((acc, item) => acc + item.intake, 0) / chunk.length;
+        const avgBurn = chunk.reduce((acc, item) => acc + item.burn, 0) / chunk.length;
+        const avgDeficit = chunk.reduce((acc, item) => acc + item.deficit, 0) / chunk.length;
+        const latestCumulative = chunk[chunk.length - 1].cumulative;
+
+        finalData.push({
+          date: `${monthIndex}개월차`,
+          weight: parseFloat(avgWeight.toFixed(1)),
+          weightDeficit: parseFloat(avgWeightDeficit.toFixed(1)),
+          intake: Math.round(avgIntake),
+          burn: Math.round(avgBurn),
+          deficit: Math.round(avgDeficit),
+          cumulative: Math.round(latestCumulative)
+        });
+        chunk = [];
+        monthIndex++;
+      }
+    }
+  }
+
+  // Build Chart.js structure
+  const labels = finalData.map(item => {
+    if (period === 'day') {
+      // Show MM-DD for daily
+      const d = new Date(item.date);
+      return `${d.getMonth() + 1}/${d.getDate()}`;
+    }
+    return item.date;
+  });
+
+  const datasets = [];
+
+  // Mapping line colors & configs
+  const configMap = {
+    intake: {
+      label: '섭취 칼로리 (kcal)',
+      borderColor: 'hsl(24, 100%, 60%)',
+      backgroundColor: 'hsla(24, 100%, 60%, 0.1)',
+      yAxisID: 'yCalories',
+      dataKey: 'intake'
+    },
+    burn: {
+      label: '소비 칼로리 (kcal)',
+      borderColor: 'hsl(330, 100%, 65%)',
+      backgroundColor: 'hsla(330, 100%, 65%, 0.1)',
+      yAxisID: 'yCalories',
+      dataKey: 'burn'
+    },
+    deficit: {
+      label: '적자 칼로리 (kcal)',
+      borderColor: 'hsl(195, 100%, 50%)',
+      backgroundColor: 'hsla(195, 100%, 50%, 0.1)',
+      yAxisID: 'yCalories',
+      dataKey: 'deficit'
+    },
+    cumulative: {
+      label: '누적 적자 칼로리 (kcal)',
+      borderColor: 'hsl(270, 100%, 65%)',
+      backgroundColor: 'hsla(270, 100%, 65%, 0.1)',
+      yAxisID: 'yCalories',
+      dataKey: 'cumulative'
+    },
+    weight: {
+      label: '몸무게 적자량 (kg)',
+      borderColor: 'hsl(145, 80%, 50%)',
+      backgroundColor: 'hsla(145, 80%, 50%, 0.1)',
+      yAxisID: 'yWeight',
+      dataKey: 'weightDeficit'
+    }
+  };
+
+  activeMetrics.forEach(metric => {
+    const config = configMap[metric];
+    datasets.push({
+      label: config.label,
+      data: finalData.map(item => item[config.dataKey]),
+      borderColor: config.borderColor,
+      backgroundColor: config.backgroundColor,
+      borderWidth: 2,
+      pointRadius: labels.length > 20 ? 0 : 3,
+      tension: 0.3,
+      yAxisID: config.yAxisID
+    });
+  });
+
+  const ctx = document.getElementById('dietChartCanvas').getContext('2d');
+  
+  if (dietChart) {
+    dietChart.destroy();
+  }
+
+  // 1. Determine scale configuration
+  const isCumulativeActive = activeMetrics.includes('cumulative');
+  const isWeightActive = activeMetrics.includes('weight');
+
+  let yCaloriesConfig = {
+    type: 'linear',
+    position: 'left',
+    grid: {
+      color: 'rgba(255, 255, 255, 0.05)'
+    },
+    ticks: {
+      color: 'hsl(215, 20%, 65%)',
+      font: { size: 9, family: 'Outfit' }
+    },
+    title: {
+      display: true,
+      text: '칼로리 (kcal)',
+      color: 'hsl(215, 20%, 65%)',
+      font: { size: 10, family: 'Outfit', weight: 'bold' }
+    }
+  };
+
+  let yWeightConfig = {
+    type: 'linear',
+    position: 'right',
+    grid: {
+      drawOnChartArea: false // Don't overlay gridlines
+    },
+    ticks: {
+      color: 'hsl(215, 20%, 65%)',
+      font: { size: 9, family: 'Outfit' }
+    },
+    title: {
+      display: true,
+      text: '몸무게 적자량 (kg)',
+      color: 'hsl(215, 20%, 65%)',
+      font: { size: 10, family: 'Outfit', weight: 'bold' }
+    }
+  };
+
+  // 정비례 관계 매칭: 누적 칼로리 적자(cumulative)와 몸무게 적자량(weight)이 모두 활성화된 경우
+  // 7700 kcal = 1 kg 비율로 양쪽 Y축의 min, max 범위를 동기화시킵니다.
+  if (isCumulativeActive && isWeightActive) {
+    // 누적 칼로리 적자(cumulative)의 최댓값과 최솟값 검색
+    let maxCum = -Infinity;
+    let minCum = Infinity;
+    finalData.forEach(item => {
+      const val = item.cumulative || 0;
+      if (val > maxCum) maxCum = val;
+      if (val < minCum) minCum = val;
+    });
+
+    if (maxCum === -Infinity) maxCum = 1000;
+    if (minCum === Infinity) minCum = 0;
+
+    // 패딩 추가 (위아래 여백 10% 추가)
+    const range = maxCum - minCum;
+    const padding = range * 0.1 || 1000;
+    const yCalMin = Math.floor((minCum - padding) / 1000) * 1000;
+    const yCalMax = Math.ceil((maxCum + padding) / 1000) * 1000;
+
+    yCaloriesConfig.min = yCalMin;
+    yCaloriesConfig.max = yCalMax;
+
+    // 몸무게 Y축 범위를 7700 비율로 완전 매칭시킴 (7700 kcal = 1 kg)
+    yWeightConfig.min = parseFloat((yCalMin / 7700).toFixed(2));
+    yWeightConfig.max = parseFloat((yCalMax / 7700).toFixed(2));
+  }
+
+  // Render chart with multiple Y axes (Calories vs Weight)
+  dietChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: datasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false // We will let the checklist serve as legend
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false,
+          backgroundColor: '#111625',
+          titleColor: '#fff',
+          bodyColor: '#cbd5e1',
+          borderColor: '#1e293b',
+          borderWidth: 1
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            color: 'rgba(255, 255, 255, 0.05)'
+          },
+          ticks: {
+            color: 'hsl(215, 20%, 65%)',
+            font: { size: 10, family: 'Outfit' }
+          }
+        },
+        yCalories: yCaloriesConfig,
+        yWeight: yWeightConfig
+      }
+    }
+  });
+}
+
+// C. Diet Calendar Rendering
+function renderCalendar() {
+  const calGrid = document.getElementById('calendar-grid-container');
+  calGrid.innerHTML = '';
+
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth(); // 0-indexed
+
+  // Title Month Name
+  document.getElementById('calendar-month-name').textContent = `${currentYear}년 ${currentMonth + 1}월`;
+
+  // 가입일 가져오기 (없으면 오늘로 폴백)
+  const joinDateStr = state.profile?.joinDate || getTodayDateString();
+
+  // First day of the month
+  const firstDay = new Date(currentYear, currentMonth, 1);
+  const startDayOfWeek = firstDay.getDay(); // 0 (Sun) - 6 (Sat)
+  const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+  // Draw empty spacers before first day of month
+  for (let i = 0; i < startDayOfWeek; i++) {
+    const spacer = document.createElement('div');
+    spacer.className = 'calendar-cell empty';
+    calGrid.appendChild(spacer);
+  }
+
+  // Draw actual days
+  const todayStr = getTodayDateString();
+
+  for (let day = 1; day <= totalDays; day++) {
+    const cellDate = new Date(currentYear, currentMonth, day);
+    const cellDateStr = cellDate.toISOString().split('T')[0];
+
+    const cell = document.createElement('div');
+    cell.className = 'calendar-cell';
+
+    const isToday = cellDateStr === todayStr;
+    const isPast = cellDateStr < todayStr;
+    const isFuture = cellDateStr > todayStr;
+    const isBeforeJoin = cellDateStr < joinDateStr; // 가입일 이전 여부
+
+    // Display Day Number
+    const dayNumSpan = document.createElement('span');
+    dayNumSpan.className = 'day-number';
+    dayNumSpan.textContent = day;
+    cell.appendChild(dayNumSpan);
+
+    // 가입일 이전 날짜: 완전히 비활성 (데이터 없음, 클릭 불가, 흐리게)
+    if (isBeforeJoin) {
+      cell.classList.add('before-join');
+      calGrid.appendChild(cell);
+      continue; // 아래 로직 건너뜀
+    }
+
+    // 가입일 이후: 데이터 있으면 수치 표시
+    const dayLog = state.logs[cellDateStr];
+    if (dayLog) {
+      cell.classList.add('has-data');
+
+      const statsDiv = document.createElement('div');
+      statsDiv.className = 'day-stats';
+
+      // Weight
+      if (dayLog.weight) {
+        const wDiv = document.createElement('div');
+        wDiv.className = 'day-stat-dot ds-weight';
+        wDiv.textContent = `${dayLog.weight}kg`;
+        statsDiv.appendChild(wDiv);
+      }
+
+      // Intake calories
+      const intakeKcal = (dayLog.intake || []).reduce((acc, f) => acc + f.kcal, 0);
+      if (intakeKcal > 0) {
+        const iDiv = document.createElement('div');
+        iDiv.className = 'day-stat-dot ds-intake';
+        iDiv.textContent = `먹:${intakeKcal}`;
+        statsDiv.appendChild(iDiv);
+      }
+
+      // Burn calories
+      if (dayLog.burn) {
+        const bDiv = document.createElement('div');
+        bDiv.className = 'day-stat-dot ds-burn';
+        bDiv.textContent = `소:${dayLog.burn}`;
+        statsDiv.appendChild(bDiv);
+      }
+
+      // Deficit
+      if (dayLog.burn && intakeKcal > 0) {
+        const deficit = dayLog.burn - intakeKcal;
+        const defDiv = document.createElement('div');
+        defDiv.className = 'day-stat-dot ds-deficit';
+        defDiv.textContent = `적:${deficit}`;
+        statsDiv.appendChild(defDiv);
+      }
+
+      cell.appendChild(statsDiv);
+    }
+
+    // Interactive logic
+    if (isToday) {
+      cell.classList.add('active-today');
+      cell.addEventListener('click', () => openLoggerModal(cellDateStr));
+    } else if (isPast && !isBeforeJoin && dayLog) {
+      // 가입 이후 과거 날짜로 데이터 있으면 읽기 전용으로 클릭 가능
+      cell.style.cursor = 'pointer';
+      cell.addEventListener('click', () => openLoggerModal(cellDateStr, true));
+    } else if (isPast && !isBeforeJoin && !dayLog) {
+      // 가입 이후 과거인데 기록 없는 날 → 미기록 표시
+      cell.classList.add('missed-day');
+    } else if (isFuture) {
+      cell.style.opacity = '0.25';
+    }
+
+    calGrid.appendChild(cell);
+  }
+}
+
+// --------------------------------------------------------------------------
+// 5. Smartwatch Bluetooth Connect & Sync (Real Web Bluetooth API)
+// --------------------------------------------------------------------------
+// 글로벌 블루투스 기기 연동 인메모리 상태 (새로고침 시 초기화되므로 gatt 재연결 필요)
+let activeBluetoothDevice = null;
+let activeHeartRateChar = null;
+let currentLiveHeartRate = 0;
+
+function openBluetoothModal() {
+  const modal = document.getElementById('modal-bluetooth');
+  modal.classList.add('active');
+  
+  renderBluetoothStatusUI();
+}
+
+function renderBluetoothStatusUI() {
+  const container = document.getElementById('bluetooth-status-container');
+  if (!container) return;
+
+  if (state.bluetooth.connected) {
+    container.innerHTML = `
+      <div style="font-size: 13px; color: var(--text-primary); margin-bottom: 8px;">
+        <span style="color: var(--color-weight); font-weight: bold;">● 기기 연결됨</span>: ${state.bluetooth.deviceName}
+      </div>
+      <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.6; text-align: left; padding: 0 10px;">
+        실제 스마트워치/밴드가 성공적으로 브라우저와 연동되었습니다. 수집된 실시간 심박 데이터 등을 기반으로 칼로리 연소량이 정밀하게 도출됩니다.
+      </p>
+      <button id="btn-disconnect-bluetooth" class="btn-primary" style="background: #ef4444; color: #fff; margin-top: 10px; width: 100%; box-shadow: none;">
+        연결 해제
+      </button>
+    `;
+
+    document.getElementById('btn-disconnect-bluetooth').addEventListener('click', disconnectBluetoothDevice);
+  } else {
+    container.innerHTML = `
+      <div style="font-size: 32px; margin-bottom: 6px;">⌚</div>
+      <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.6; text-align: left; padding: 0 10px;">
+        실제 스마트 워치 또는 블루투스 심박 측정기 기기와 연동을 진행합니다.<br><br>
+        <strong>연동 단계:</strong><br>
+        1. 워치나 밴드의 블루투스 연결 대기(페어링 모드) 상태를 켜주세요.<br>
+        2. 아래 버튼을 클릭하면 브라우저의 <strong>기기 탐색 팝업창</strong>이 나타납니다.<br>
+        3. 목록에서 연결할 기기를 선택해주세요.
+      </p>
+      <button id="btn-start-ble-scan" class="btn-primary" style="margin-top: 10px; width: 100%;">
+        주변 기기 검색 및 연동
+      </button>
+    `;
+
+    document.getElementById('btn-start-ble-scan').addEventListener('click', pairBluetoothDeviceActual);
+  }
+}
+
+function connectVirtualWatch() {
+  state.bluetooth.connected = true;
+  state.bluetooth.deviceName = "가상 스마트워치 (FitSync Virtual)";
+  saveState();
+  closeModal('modal-bluetooth');
+  renderProfile();
+  showToastNotification("가상 워치 연결 완료", "테스트용 가상 스마트워치와 연동되었습니다.");
+}
+
+async function pairBluetoothDeviceActual() {
+  if (!navigator.bluetooth) {
+    if (confirm("웹 브라우저 보안 규정(HTTPS 또는 localhost 필요)으로 인해 실제 블루투스 탐색이 차단된 상태입니다.\n\n대신 테스트용 가상 스마트워치와 연동하여 모든 기능을 테스트해보시겠습니까?")) {
+      connectVirtualWatch();
+    } else {
+      renderBluetoothStatusUI();
+    }
+    return;
+  }
+
+  const container = document.getElementById('bluetooth-status-container');
+  container.innerHTML = `
+    <div style="text-align: center; padding: 20px;">
+      <div class="ai-loading-box" style="display: block; margin-bottom: 12px;">브라우저 기기 선택 창 대기 중...</div>
+      연동할 블루투스 스마트 워치/밴드를 선택해주세요.
+    </div>
+  `;
+
+  try {
+    const device = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true,
+      optionalServices: ['heart_rate']
+    });
+
+    container.innerHTML = `
+      <div style="text-align: center; padding: 20px;">
+        <div class="ai-loading-box" style="display: block; margin-bottom: 12px;">${device.name || '스마트워치'} 연결 중...</div>
+        GATT 서버에 접속하고 있습니다.
+      </div>
+    `;
+
+    const server = await device.gatt.connect();
+    activeBluetoothDevice = device;
+
+    // 기기 예기치 못한 연결 해제 리스너
+    device.addEventListener('gattserverdisconnected', onBluetoothDisconnectedUnexpectedly);
+
+    state.bluetooth.connected = true;
+    state.bluetooth.deviceName = device.name || '알 수 없는 블루투스 기기';
+    saveState();
+
+    // 표준 심박수 수집 시도
+    try {
+      const service = await server.getPrimaryService('heart_rate');
+      const characteristic = await service.getCharacteristic('heart_rate_measurement');
+      activeHeartRateChar = characteristic;
+
+      await characteristic.startNotifications();
+      characteristic.addEventListener('characteristicvaluechanged', handleHeartRateNotification);
+      console.log("실시간 BLE 심박수 수집이 시작되었습니다.");
+    } catch (hrErr) {
+      console.warn("표준 BLE 심박 서비스를 지원하지 않거나 연동 실패. 기기 연결 상태만 유지합니다.", hrErr);
+    }
+
+    closeModal('modal-bluetooth');
+    renderProfile();
+    showToastNotification("블루투스 연동 성공", `[${state.bluetooth.deviceName}]와 실제로 연동되었습니다.`);
+
+  } catch (err) {
+    console.error("블루투스 연결 시 오류 발생:", err);
+    renderBluetoothStatusUI();
+    if (err.name !== 'NotFoundError') {
+      if (confirm(`블루투스 연동에 실패했습니다 (원인: ${err.message}).\n\n대신 테스트를 위해 가상 스마트워치와 연동하시겠습니까?`)) {
+        connectVirtualWatch();
+      }
+    }
+  }
+}
+
+function onBluetoothDisconnectedUnexpectedly() {
+  state.bluetooth.connected = false;
+  state.bluetooth.deviceName = null;
+  activeBluetoothDevice = null;
+  activeHeartRateChar = null;
+  currentLiveHeartRate = 0;
+  saveState();
+  renderProfile();
+  showToastNotification("블루투스 끊김", "연동되어 있던 기기와의 블루투스 연결이 끊어졌습니다.");
+}
+
+function disconnectBluetoothDevice() {
+  if (activeBluetoothDevice && activeBluetoothDevice.gatt.connected) {
+    activeBluetoothDevice.gatt.disconnect();
+  } else {
+    state.bluetooth.connected = false;
+    state.bluetooth.deviceName = null;
+    activeBluetoothDevice = null;
+    activeHeartRateChar = null;
+    currentLiveHeartRate = 0;
+    saveState();
+    renderProfile();
+    closeModal('modal-bluetooth');
+    showToastNotification("연결 해제 완료", "블루투스 기기 연결을 해제했습니다.");
+  }
+}
+
+function handleHeartRateNotification(event) {
+  const value = event.target.value;
+  const flags = value.getUint8(0);
+  const rate16 = flags & 0x01;
+  let heartRate = 0;
+  if (rate16) {
+    heartRate = value.getUint16(1, true);
+  } else {
+    heartRate = value.getUint8(1);
+  }
+  currentLiveHeartRate = heartRate;
+  console.log(`수신된 실시간 심박수: ${heartRate} bpm`);
+}
+
+// --------------------------------------------------------------------------
+// 6. Logger Dialog & Simulation Workflow
+// --------------------------------------------------------------------------
+function openLoggerModal(dateStr, readOnly = false) {
+  state.activeDate = dateStr;
+  
+  // Format Date title header
+  const d = new Date(dateStr);
+  const formattedDate = `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 기록`;
+  document.getElementById('logger-modal-title').textContent = formattedDate;
+
+  const log = state.logs[dateStr] || { weight: null, intake: [], burn: 0 };
+  
+  // Reset logs input forms
+  document.getElementById('logger-modal').classList.add('active');
+
+  // Step 1 check: Morning Empty Stomach Weight
+  if (!log.weight) {
+    // Show Weight Entry panel, hide split logger
+    document.getElementById('logger-step-weight').style.display = 'flex';
+    document.getElementById('logger-step-split').style.display = 'none';
+    document.getElementById('input-morning-weight').value = '';
+  } else {
+    // Show split calorie log panels
+    document.getElementById('logger-step-weight').style.display = 'none';
+    document.getElementById('logger-step-split').style.display = 'flex';
+    loadSplitLoggerData(dateStr);
+  }
+}
+
+// Proceed past weight prompt to full intake/burn panels
+function saveMorningWeight() {
+  const weightVal = parseFloat(document.getElementById('input-morning-weight').value);
+  if (isNaN(weightVal) || weightVal <= 20 || weightVal >= 300) {
+    alert("올바른 몸무게를 입력하세요 (예: 70.5)");
+    return;
+  }
+
+  const dateStr = state.activeDate;
+  if (!state.logs[dateStr]) {
+    state.logs[dateStr] = { weight: weightVal, intake: [], burn: 0 };
+  } else {
+    state.logs[dateStr].weight = weightVal;
+  }
+
+  // Update profile current weight
+  state.profile.weight = weightVal;
+  
+  // Update Profile BMR and BMI dynamically based on latest daily recorded weight
+  const currentAge = calculateAge(state.profile.dob);
+  state.profile.bmr = calculateBMR(state.profile.gender, currentAge, state.profile.height, weightVal);
+  state.profile.bmi = calculateBMI(state.profile.height, weightVal);
+  
+  saveState();
+
+  // Transition to Split Logger
+  document.getElementById('logger-step-weight').style.display = 'none';
+  document.getElementById('logger-step-split').style.display = 'flex';
+  loadSplitLoggerData(dateStr);
+  renderProfile();
+  renderDashboard();
+}
+
+// Load current logs into split logs DOM
+function loadSplitLoggerData(dateStr) {
+  const log = state.logs[dateStr];
+  const prof = state.profile;
+  const currentAge = calculateAge(prof.dob);
+  const calculatedBmr = calculateBMR(prof.gender, currentAge, prof.height, log.weight);
+
+  // BMR display label
+  document.getElementById('logger-bmr-val').textContent = `${calculatedBmr} kcal`;
+
+  // Editable Weight display
+  document.getElementById('inline-edit-weight').value = log.weight;
+
+  // Intake food logs summary
+  const intakeList = document.getElementById('logged-food-list');
+  intakeList.innerHTML = '';
+  
+  const totalIntakeKcal = (log.intake || []).reduce((acc, f, index) => {
+    const item = document.createElement('div');
+    item.style.display = 'flex';
+    item.style.justifyContent = 'space-between';
+    item.style.alignItems = 'center';
+    item.style.fontSize = '12px';
+    item.style.padding = '4px 0';
+    item.style.borderBottom = '1px solid rgba(255,255,255,0.03)';
+    
+    item.innerHTML = `
+      <span>🍴 ${f.food} (${f.weight}g)</span> 
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <strong>+${f.kcal} kcal</strong>
+        <button class="btn-delete-food" data-index="${index}" style="background: transparent; border: none; color: #ef4444; cursor: pointer; font-size: 16px; padding: 0 4px;" title="기록 삭제">×</button>
+      </div>
+    `;
+    intakeList.appendChild(item);
+    return acc + f.kcal;
+  }, 0);
+
+  // Add delete listeners
+  document.querySelectorAll('.btn-delete-food').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const idx = parseInt(e.target.getAttribute('data-index'));
+      deleteFoodIntake(idx);
+    });
+  });
+
+  document.getElementById('logger-total-intake').textContent = `${totalIntakeKcal} kcal`;
+
+  // Reset inputs
+  document.getElementById('input-food-name').value = '';
+  document.getElementById('input-food-weight').value = '';
+  document.getElementById('food-photo-preview').innerHTML = '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0-2-.9-2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg><span>음식 사진 첨부 (선택)</span>';
+
+  // Smartwatch burn status
+  const watchGrid = document.getElementById('sync-watch-stats-grid');
+  const syncBtn = document.getElementById('btn-smartwatch-sync-trigger');
+  const coeffOutput = document.getElementById('watch-coeff-output');
+
+  if (log.smartwatchSync && log.smartwatchSync.heartRate) {
+    // Log contains watch sync parameters
+    watchGrid.style.display = 'grid';
+    coeffOutput.style.display = 'flex';
+    syncBtn.style.display = 'none';
+
+    document.getElementById('watch-val-hr').textContent = `${log.smartwatchSync.heartRate} bpm`;
+    document.getElementById('watch-val-detail').textContent = log.smartwatchSync.desc;
+
+    document.getElementById('txt-coeff-val').textContent = log.activeFactor;
+    document.getElementById('txt-tdee-val').textContent = `${log.burn} kcal`;
+  } else {
+    watchGrid.style.display = 'none';
+    coeffOutput.style.display = 'none';
+    syncBtn.style.display = 'block';
+  }
+}
+
+// Intake: Mock Photo Upload preview
+function triggerPhotoUpload() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = event => {
+        const preview = document.getElementById('food-photo-preview');
+        preview.innerHTML = `<img src="${event.target.result}" alt="Food photo">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  input.click();
+}
+
+// AI Calorie Estimation Logic (OpenAI API 연동)
+// AI Calorie Estimation Logic
+async function saveFoodIntake() {
+  const foodName = document.getElementById('input-food-name').value.trim();
+  const foodWeight = parseFloat(document.getElementById('input-food-weight').value);
+
+  if (!foodName) {
+    alert("음식 이름을 입력하세요.");
+    return;
+  }
+  if (isNaN(foodWeight) || foodWeight <= 0) {
+    alert("음식 무게를 입력하세요 (g 단위).");
+    return;
+  }
+
+  const aiLoader = document.getElementById('food-ai-loader');
+  aiLoader.style.display = 'block';
+
+  // 사진 첨부 여부 확인
+  const photoFrame = document.getElementById('food-photo-preview');
+  const photoImg = photoFrame.querySelector('img');
+
+  try {
+    let resultText;
+
+    if (photoImg && photoImg.src.startsWith('data:')) {
+      // ── 사진이 있으면 GPT-4o로 이미지 분석 ──
+      aiLoader.textContent = '📸 GPT-4o가 음식 사진을 분석하는 중...';
+      const fullDataUri = photoImg.src;
+
+      const prompt =
+        `다음 음식 사진과 추가 정보를 바탕으로 칼로리를 추정해줘.\n` +
+        `음식명: ${foodName}\n무게: ${foodWeight}g\n\n` +
+        `응답 형식 (JSON만, 다른 말 없이):\n` +
+        `{"kcal": 숫자, "margin": 숫자, "description": "짧은 설명"}`;
+
+      resultText = await callOpenAIWithImage(prompt, fullDataUri);
+    } else {
+      // ── 텍스트만으로 GPT-4o 분석 ──
+      aiLoader.textContent = '🤖 GPT-4o가 칼로리를 추정하는 중...';
+      const prompt =
+        `한국 음식 영양 전문가로서 아래 음식의 칼로리를 추정해줘.\n` +
+        `음식명: ${foodName}\n무게: ${foodWeight}g\n\n` +
+        `응답 형식 (JSON만, 다른 말 없이):\n` +
+        `{"kcal": 숫자, "margin": 숫자, "description": "짧은 설명"}`;
+
+      resultText = await callOpenAI(prompt);
+    }
+
+    aiLoader.textContent = '✅ AI 분석 완료!';
+
+    // JSON 파싱 (GPT가 가끔 ```json 블록으로 감쌀 수 있음)
+    const jsonMatch = resultText.match(/\{[\s\S]*?\}/);
+    if (!jsonMatch) throw new Error('AI 응답 형식 오류');
+    const result = JSON.parse(jsonMatch[0]);
+
+    const finalKcal = Math.round(result.kcal);
+    const margin = Math.round(result.margin) || Math.round(finalKcal * 0.08);
+    const desc = result.description || '';
+
+    setTimeout(() => {
+      aiLoader.style.display = 'none';
+
+      const dateStr = state.activeDate;
+      state.logs[dateStr].intake.push({ food: foodName, weight: foodWeight, kcal: finalKcal });
+      saveState();
+      loadSplitLoggerData(dateStr);
+      renderCalendar();
+      renderDashboard();
+
+      alert(`🤖 GPT-4o 분석 결과\n\n${foodName} (${foodWeight}g)\n추정 칼로리: ${finalKcal} kcal (±${margin} kcal)\n\n${desc}`);
+    }, 500);
+
+  } catch (err) {
+    aiLoader.style.display = 'none';
+    console.error('OpenAI API 오류:', err);
+
+    // 로컬 시뮬레이션 모드로 폴백
+    const fallback = mockFoodAnalysis(foodName, foodWeight);
+    const finalKcal = fallback.kcal;
+    const margin = fallback.margin;
+    const desc = fallback.description;
+
+    const dateStr = state.activeDate;
+    state.logs[dateStr].intake.push({ food: foodName, weight: foodWeight, kcal: finalKcal });
+    saveState();
+    loadSplitLoggerData(dateStr);
+    renderCalendar();
+    renderDashboard();
+
+    alert(`⚠️ OpenAI API 호출 실패 (이유: ${err.message})\n\n[로컬 시뮬레이션 모드로 자동 전환됨]\n${foodName} (${foodWeight}g)\n추정 칼로리: ${finalKcal} kcal (±${margin} kcal)\n\n${desc}\n\n* API 키의 사용량 초과(Quota Exceeded) 혹은 결제 수단을 확인해주세요.`);
+  }
+}
+
+// --------------------------------------------------------------------------
+// Smartwatch 데이터 → AI 활동계수 분석
+// --------------------------------------------------------------------------
+async function startSmartwatchSync() {
+  if (!state.bluetooth.connected) {
+    alert('연동된 블루투스 기기가 없습니다. 프로필 화면에서 스마트 워치 또는 밴드 기기를 먼저 연결해주세요!');
+    switchScreen('profile');
+    closeModal('logger-modal');
+    return;
+  }
+
+  const syncBtn = document.getElementById('btn-smartwatch-sync-trigger');
+  const statusEl = document.createElement('div');
+  statusEl.className = 'ai-loading-box';
+  statusEl.style.display = 'block';
+  statusEl.style.marginTop = '10px';
+  syncBtn.parentNode.appendChild(statusEl);
+  syncBtn.textContent = '기기 동기화 중...';
+  syncBtn.disabled = true;
+
+  // 실측 심박수를 우선적으로 사용하고, 없으면 연동 상태 기반으로 도출
+  const heartRateVal = currentLiveHeartRate > 0 ? currentLiveHeartRate : Math.round(72 + Math.random() * 45);
+  const isRealHr = currentLiveHeartRate > 0;
+
+  const watchData = {
+    avgHeartRate: heartRateVal
+  };
+
+  const steps = [
+    `⌚ 연동 기기 [${state.bluetooth.deviceName}]와 실시간 통신 중...`,
+    isRealHr ? `💓 실시간 센서 심박수 감측 완료: ${heartRateVal} bpm` : `💓 기기 센서 데이터 로드 완료`,
+    `🤖 GPT-4o가 심박수 기반 활동량 분석 중...`
+  ];
+  let si = 0;
+  statusEl.textContent = steps[si];
+  const ticker = setInterval(() => {
+    si++;
+    if (si < steps.length) statusEl.textContent = steps[si];
+  }, 1000);
+
+  try {
+    const prompt =
+      `스마트 워치로부터 측정된 평균 심박수 데이터를 분석해서 오늘 하루 활동계수(Activity Factor)를 산출해줘.\n\n` +
+      `스마트 워치 데이터:\n` +
+      `- 기기명: ${state.bluetooth.deviceName}\n` +
+      `- 평균 심박수: ${watchData.avgHeartRate} bpm\n\n` +
+      `심박수 기반 활동계수 기준 가이드:\n` +
+      `- 60 ~ 75 bpm: 거의 운동 없음 (활동계수 1.2)\n` +
+      `- 76 ~ 90 bpm: 가벼운 일상 활동 (활동계수 1.375)\n` +
+      `- 91 ~ 110 bpm: 보통 활동 및 적당한 운동 (활동계수 1.55)\n` +
+      `- 111 ~ 130 bpm: 매우 활동적 및 강도 높은 운동 (활동계수 1.725)\n` +
+      `- 130 bpm 초과: 격렬한 활동 및 초고강도 운동 (활동계수 1.9)\n\n` +
+      `응답 형식 (JSON만, 다른 말 없이):\n` +
+      `{"factor": 숫자, "level": "활동 수준 설명", "detail": "평균 심박수 기반 분석 결과 한 문장"}`;
+
+    const resultText = await callOpenAI(prompt);
+    clearInterval(ticker);
+
+    const jsonMatch = resultText.match(/\{[\s\S]*?\}/);
+    if (!jsonMatch) throw new Error('AI 응답 형식 오류');
+    const result = JSON.parse(jsonMatch[0]);
+
+    const dateStr = state.activeDate;
+    const log = state.logs[dateStr];
+    const prof = state.profile;
+    const currentAge = calculateAge(prof.dob);
+    const dayBmr = calculateBMR(prof.gender, currentAge, prof.height, log.weight);
+    const totalBurn = Math.round(dayBmr * result.factor);
+
+    log.activeFactor = result.factor;
+    log.burn = totalBurn;
+    log.smartwatchSync = {
+      heartRate: watchData.avgHeartRate,
+      desc: `${result.level} — ${result.detail}`
+    };
+
+    saveState();
+    statusEl.remove();
+    syncBtn.style.display = 'none';
+    loadSplitLoggerData(dateStr);
+    renderCalendar();
+    renderDashboard();
+
+  } catch (err) {
+    clearInterval(ticker);
+    statusEl.remove();
+    syncBtn.textContent = '스마트 워치 동기화 & 활동 계수 도출';
+    syncBtn.disabled = false;
+    console.error('GPT-4o 워치 분석 오류:', err);
+
+    // 로컬 시뮬레이션 모드로 폴백
+    const fallback = mockWatchAnalysis(watchData);
+    const dateStr = state.activeDate;
+    const log = state.logs[dateStr];
+    const prof = state.profile;
+    const currentAge = calculateAge(prof.dob);
+    const dayBmr = calculateBMR(prof.gender, currentAge, prof.height, log.weight);
+    const totalBurn = Math.round(dayBmr * fallback.factor);
+
+    log.activeFactor = fallback.factor;
+    log.burn = totalBurn;
+    log.smartwatchSync = {
+      heartRate: watchData.avgHeartRate,
+      desc: `${fallback.level} — ${fallback.detail}`
+    };
+
+    saveState();
+    syncBtn.style.display = 'none';
+    loadSplitLoggerData(dateStr);
+    renderCalendar();
+    renderDashboard();
+
+    alert(`⚠️ OpenAI API 호출 실패 (이유: ${err.message})\n\n[로컬 시뮬레이션 모드로 자동 전환됨]\n활동 수준: ${fallback.level}\n활동 계수: ${fallback.factor}\n총 소비 칼로리: ${totalBurn} kcal\n\n* API 키의 사용량 초과(Quota Exceeded) 혹은 결제 수단을 확인해주세요.`);
+  }
+}
+
+// Smartwatch 동기화 및 소모 칼로리 기록 초기화
+function resetSmartwatchSync() {
+  if (confirm("오늘의 소모 칼로리 기록과 스마트 워치 동기화 내역을 초기화하시겠습니까?")) {
+    const dateStr = state.activeDate;
+    if (state.logs[dateStr]) {
+      const log = state.logs[dateStr];
+      delete log.activeFactor;
+      delete log.burn;
+      delete log.smartwatchSync;
+      
+      saveState();
+      loadSplitLoggerData(dateStr);
+      renderCalendar();
+      renderDashboard();
+      showToastNotification("동기화 초기화", "소모 칼로리 기록이 초기화되었습니다.");
+    }
+  }
+}
+
+// --------------------------------------------------------------------------
+// 7. Onboarding Flow (First Launch Input Panel)
+// --------------------------------------------------------------------------
+function setupOnboarding() {
+  const overlay = document.getElementById('modal-onboarding');
+  overlay.classList.add('active');
+
+  let selectedGender = 'female';
+  
+  // Add listeners to gender buttons in modal
+  const maleBtn = document.getElementById('btn-onboard-male');
+  const femaleBtn = document.getElementById('btn-onboard-female');
+
+  maleBtn.addEventListener('click', () => {
+    selectedGender = 'male';
+    maleBtn.classList.add('active');
+    femaleBtn.classList.remove('active');
+  });
+
+  femaleBtn.addEventListener('click', () => {
+    selectedGender = 'female';
+    femaleBtn.classList.add('active');
+    maleBtn.classList.remove('active');
+  });
+
+  document.getElementById('btn-save-onboarding').addEventListener('click', () => {
+    const dob = document.getElementById('onboard-dob').value;
+    const height = parseFloat(document.getElementById('onboard-height').value);
+    const weight = parseFloat(document.getElementById('onboard-weight').value);
+    const target = parseFloat(document.getElementById('onboard-target').value);
+
+    // Validations
+    if (!dob || isNaN(height) || isNaN(weight) || isNaN(target)) {
+      alert("모든 빈칸을 형식에 맞게 채워주세요!");
+      return;
+    }
+
+    if (height < 50 || height > 250 || weight < 10 || weight > 300 || target < 10 || target > 300) {
+      alert("올바른 수치를 소수점 한자리까지 적어주세요.");
+      return;
+    }
+
+    // Save profile details — joinDate를 오늘 날짜로 기록
+    state.profile = {
+      gender: selectedGender,
+      dob: dob,
+      height: height,
+      weight: weight,
+      startWeight: weight, // 처음 입력한 체중이 시작 체중
+      targetWeight: target,
+      joinDate: getTodayDateString(), // 가입 날짜 저장
+      bmr: 0,
+      bmi: 0
+    };
+
+    const age = calculateAge(dob);
+    state.profile.bmr = calculateBMR(selectedGender, age, height, weight);
+    state.profile.bmi = calculateBMI(height, weight);
+
+    // 빈 로그로 시작 (가짜 데이터 없음)
+    initializeNewUser();
+
+    saveState();
+    overlay.classList.remove('active');
+    
+    // Switch to Dashboard
+    switchScreen('dashboard');
+    showToastNotification("프로필 설정 완료", "다이어트 계획 작성이 성공적으로 완료되었습니다!");
+  });
+}
+
+// --------------------------------------------------------------------------
+// 8. Edit / Reset Profile Workflows
+// --------------------------------------------------------------------------
+function openEditProfileModal() {
+  const modal = document.getElementById('modal-edit-profile');
+  modal.classList.add('active');
+
+  const prof = state.profile;
+  let selectedGender = prof.gender;
+
+  const maleBtn = document.getElementById('btn-edit-male');
+  const femaleBtn = document.getElementById('btn-edit-female');
+
+  if (selectedGender === 'male') {
+    maleBtn.classList.add('active');
+    femaleBtn.classList.remove('active');
+  } else {
+    femaleBtn.classList.add('active');
+    maleBtn.classList.remove('active');
+  }
+
+  maleBtn.onclick = () => {
+    selectedGender = 'male';
+    maleBtn.classList.add('active');
+    femaleBtn.classList.remove('active');
+  };
+
+  femaleBtn.onclick = () => {
+    selectedGender = 'female';
+    femaleBtn.classList.add('active');
+    maleBtn.classList.remove('active');
+  };
+
+  document.getElementById('edit-dob').value = prof.dob;
+  document.getElementById('edit-height').value = prof.height;
+  document.getElementById('edit-weight').value = prof.weight;
+  document.getElementById('edit-target').value = prof.targetWeight;
+
+  document.getElementById('btn-save-edit').onclick = () => {
+    const dob = document.getElementById('edit-dob').value;
+    const height = parseFloat(document.getElementById('edit-height').value);
+    const weight = parseFloat(document.getElementById('edit-weight').value);
+    const target = parseFloat(document.getElementById('edit-target').value);
+
+    if (!dob || isNaN(height) || isNaN(weight) || isNaN(target)) {
+      alert("모든 항목을 올바르게 채워주세요!");
+      return;
+    }
+
+    prof.gender = selectedGender;
+    prof.dob = dob;
+    prof.height = height;
+    prof.weight = weight;
+    prof.targetWeight = target;
+
+    const age = calculateAge(dob);
+    prof.bmr = calculateBMR(selectedGender, age, height, weight);
+    prof.bmi = calculateBMI(height, weight);
+
+    saveState();
+    closeModal('modal-edit-profile');
+    renderProfile();
+    renderDashboard();
+    showToastNotification("수정 완료", "프로필 정보가 갱신되었습니다.");
+  };
+}
+
+// Reset Entire Application
+function resetApp() {
+  if (confirm("정말로 앱의 모든 기록을 지우고 처음부터 다시 시작하시겠습니까? 프로필 정보와 저장된 데이터가 전부 리셋됩니다.")) {
+    localStorage.removeItem(STORAGE_KEY);
+    state.profile = null;
+    state.logs = {};
+    state.bluetooth = { connected: false, deviceName: null };
+    saveState();
+    window.location.reload();
+  }
+}
+
+// --------------------------------------------------------------------------
+// 9. Toast Notification Handler
+// --------------------------------------------------------------------------
+let notificationTimer = null;
+
+function showToastNotification(title, text) {
+  const toast = document.getElementById('push-notification');
+  document.getElementById('push-title').textContent = title;
+  document.getElementById('push-desc').textContent = text;
+  
+  toast.classList.add('show');
+
+  if (notificationTimer) clearTimeout(notificationTimer);
+  notificationTimer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 6000);
+}
+
+// Remind User if today is empty
+function scheduleReminderNotification() {
+  setTimeout(() => {
+    const todayStr = getTodayDateString();
+    const todayLog = state.logs[todayStr];
+    
+    // If today is empty, or weights/calories are not recorded
+    if (!todayLog || !todayLog.weight || (todayLog.intake || []).length === 0) {
+      showToastNotification(
+        "🔔 다이어트 리마인더", 
+        "오늘 아침 공복 몸무게와 칼로리를 아직 입력하지 않으셨습니다. 지금 바로 기록해보세요!"
+      );
+    }
+  }, 10000); // 10 seconds idle trigger
+}
+
+// Helper date string
+function getTodayDateString() {
+  return new Date().toISOString().split('T')[0];
+}
+
+// Helper to close modals
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('active');
+}
+
+// Helper to delete food logs
+function deleteFoodIntake(index) {
+  const dateStr = state.activeDate;
+  if (state.logs[dateStr] && state.logs[dateStr].intake) {
+    if (confirm("이 기록을 삭제하시겠습니까?")) {
+      state.logs[dateStr].intake.splice(index, 1);
+      saveState();
+      loadSplitLoggerData(dateStr);
+      renderCalendar();
+      renderDashboard();
+    }
+  }
+}
+
+// --------------------------------------------------------------------------
+// 10. Initialization & Event Handlers
+// --------------------------------------------------------------------------
+window.addEventListener('DOMContentLoaded', () => {
+  loadState();
+
+  // 구버전 데이터 감지: joinDate가 없으면 가짜 30일치 데이터가 들어있는 것
+  // → 자동으로 logs를 비우고 오늘을 joinDate로 설정
+  if (state.profile && !state.profile.joinDate) {
+    state.profile.joinDate = getTodayDateString();
+    state.profile.startWeight = state.profile.weight; // 현재 체중을 시작 체중으로 재설정
+    state.logs = {}; // 가짜 데이터 전부 제거
+    saveState();
+  }
+
+  // If no profile exists, generate mock history + onboard user OR show onboard straight away
+  // To WOW the user immediately with graphs and logs, we auto-generate mock history if empty,
+  // but let them input their profile details, or provide quick access.
+  if (!state.profile) {
+    setupOnboarding();
+  }
+
+  // Initialize tabs UI
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault();
+      const screen = item.getAttribute('data-screen');
+      if (screen) {
+        switchScreen(screen);
+      }
+    });
+  });
+
+  // Bind close buttons for modals
+  document.querySelectorAll('.btn-close').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const modal = btn.closest('.modal-overlay');
+      if (modal) modal.classList.remove('active');
+    });
+  });
+
+  // Graph Overlay Toggles
+  document.querySelectorAll('.dropdown-item input[type="checkbox"]').forEach(chk => {
+    chk.addEventListener('change', (e) => {
+      const activeMetrics = getActiveChartMetrics();
+      if (activeMetrics.length > 3) {
+        e.target.checked = false;
+        alert("그래프는 동시에 최대 3개까지만 활성화할 수 있습니다.");
+      } else {
+        renderChartData();
+      }
+    });
+  });
+
+  // Dropdown Button Toggle
+  const btnDrop = document.getElementById('btn-graph-dropdown');
+  const dropMenu = document.getElementById('graph-dropdown-menu');
+  btnDrop.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropMenu.classList.toggle('active');
+  });
+
+  document.addEventListener('click', () => {
+    dropMenu.classList.remove('active');
+  });
+
+  dropMenu.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  // Period buttons
+  document.querySelectorAll('.btn-period').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.btn-period').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderChartData();
+    });
+  });
+
+  // Push notification click -> opens logger
+  document.getElementById('push-notification').addEventListener('click', () => {
+    document.getElementById('push-notification').classList.remove('show');
+    switchScreen('calendar');
+    openLoggerModal(getTodayDateString());
+  });
+
+  // Profiles edit buttons
+  document.getElementById('btn-profile-edit').addEventListener('click', openEditProfileModal);
+  document.getElementById('btn-profile-reset').addEventListener('click', resetApp);
+  document.getElementById('btn-watch-sync').addEventListener('click', openBluetoothModal);
+
+  // Bind weight save & inline edit
+  document.getElementById('btn-save-weight').addEventListener('click', saveMorningWeight);
+
+
+  
+  // 몸무게 직접 수정 시 자동 저장 및 갱신 로직
+  document.getElementById('inline-edit-weight').addEventListener('change', (e) => {
+    const newWeight = parseFloat(e.target.value);
+    if (!isNaN(newWeight) && newWeight > 20 && newWeight < 300) {
+      const dateStr = state.activeDate;
+      const log = state.logs[dateStr];
+      if (log) {
+        log.weight = newWeight;
+        state.profile.weight = newWeight; // 프로필 몸무게도 업데이트
+        
+        // BMR 및 BMI 재계산
+        const currentAge = calculateAge(state.profile.dob);
+        state.profile.bmr = calculateBMR(state.profile.gender, currentAge, state.profile.height, newWeight);
+        state.profile.bmi = calculateBMI(state.profile.height, newWeight);
+        
+        // 만약 소모 칼로리(활동계수) 기록이 있다면 BMR이 변했으니 다시 계산
+        if (log.activeFactor && log.activeFactor > 0) {
+          log.burn = Math.round(state.profile.bmr * log.activeFactor);
+        }
+
+        saveState();
+        loadSplitLoggerData(dateStr);
+        renderCalendar();
+        renderDashboard();
+      }
+    } else {
+      alert("올바른 몸무게를 입력하세요.");
+      // 원래 값으로 되돌리기
+      e.target.value = state.logs[state.activeDate].weight;
+    }
+  });
+  
+  // Intake photobox click
+  document.getElementById('food-photo-preview').addEventListener('click', triggerPhotoUpload);
+  document.getElementById('btn-save-food').addEventListener('click', saveFoodIntake);
+
+  // Sync Watch
+  document.getElementById('btn-smartwatch-sync-trigger').addEventListener('click', startSmartwatchSync);
+
+  // Start at dashboard
+  switchScreen('dashboard');
+
+  // Trigger idle reminder toast
+  scheduleReminderNotification();
+});
+
+</script>
+</body>
+</html>
